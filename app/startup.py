@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+from pathlib import Path
 import re
 import subprocess as sp
 
@@ -6,7 +7,7 @@ import subprocess as sp
 Assumes installation on Linux system
 """
 
-JUPYTER_CONFIG = "~/.jupyter/jupyter_notebook_config.py"
+JUPYTER_CONFIG = str(Path.home()) + "/.jupyter/jupyter_notebook_config.py"
 PORT_NUMBER = 8888
 
 def check_installed(file_name):
@@ -35,6 +36,7 @@ def edit_jupyter():
 def launch_notebook():
 	if not check_installed("jupyter"):
 		sp.run(["conda", "install", "jupyter"])
+		
 	try:
 		sp.check_output(["ls", JUPYTER_CONFIG])
 	except sp.CalledProcessError:
@@ -43,5 +45,4 @@ def launch_notebook():
 		sp.run(["jupyter-notebook", "--no-browser", "--port={}".format(PORT_NUMBER)])
 
 if __name__ == '__main__':
-	print("Is vim installed?", check_installed('vim'))
-	print("Is sl installed?", check_installed("sl"))
+	launch_notebook()
