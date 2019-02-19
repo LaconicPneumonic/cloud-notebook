@@ -16,3 +16,4 @@ All the power of a machine learning setup without the cost and the overhead of s
 ## Future Work
 1. Supporting multiple instance types at different price/power
 2. Supporting different docker vms
+3. Cross cloud paltform support
