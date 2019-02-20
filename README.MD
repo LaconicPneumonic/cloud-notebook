@@ -13,8 +13,11 @@ All the power of a machine learning setup without the cost and the overhead of s
 4. Initialize it with a startup script that installs docker and launches a [tensorflow/jupyter capable vm](https://hub.docker.com/r/jupyter/tensorflow-notebook)
 5. A temporary password is set to prevent arbitrary execution of code your now public jupyter server
 
-## Future Work
-1. Supporting multiple instance types at different price/power
-2. Supporting different docker vms
-3. Cross cloud paltform support
-4. Add GPU Support
+## Future Goals
+1. Adding GPU support to docker VM
+2. Give users access to starter/example notebooks
+  - Similar to the ones on tensorflow's website
+  - Allow users to setup with link as well
+3. Loading training files onto cloud instance
+  - Through local directory or link
+4. Smoother installation for linux users
