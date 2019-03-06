@@ -1,5 +1,4 @@
 #! /bin/bash
-
 # Install Docker
 sudo apt-get update
 sudo apt-get install \
@@ -15,5 +14,9 @@ sudo add-apt-repository \
    stable"
 sudo apt-get update
 
+# Install NVIDIA-Docker
+sudo apt install nvidia-docker2
+
 # Run jupyter vm
-sudo docker run -p 80:8888 jupyter/tensorflow-notebook start-notebook.sh --NotebookApp.token='temporaryBridge'
+sudo nvidia-docker run -p 80:8888 tensorflow/tensorflow:latest-py3-gpu-jupyter \
+	bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root --NotebookApp.token='temporaryBridge'"
