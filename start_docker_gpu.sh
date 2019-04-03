@@ -18,5 +18,5 @@ sudo apt-get update
 sudo apt install nvidia-docker2
 
 # Run jupyter vm
-sudo nvidia-docker run -p 80:8888 tensorflow/tensorflow:latest-py3-gpu-jupyter \
+sudo nvidia-docker run -p 80:8888 tensorflow/tensorflow:latest-gpu-py3-jupyter \
 	bash -c "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root --NotebookApp.token='temporaryBridge'"
