@@ -1,12 +1,40 @@
 #! /bin/bash
 
-IMAGE_FAMILY="tf-latest-gpu"
+IMAGE_FAMILY_GPU="tf-latest-gpu"
+IMAGE_FAMILY_CPU="tf-latest-cpu"
 ZONE="us-west1-b"
 INSTANCE_NAME="cloud-notebook"
 
 read -p "Have you increased your quota for 'nvidia-tesla-v100' in $ZONE [y/n]:" YES
+create_gpu_instance()
+{
+	gcloud compute instances create $INSTANCE_NAME \
+		--zone=$ZONE \
+		--image-family=$IMAGE_FAMILY_GPU \
+		--image-project=deeplearning-platform-release \
+		--boot-disk-size=56GB \
+		--maintenance-policy=TERMINATE \
+		--accelerator="type=nvidia-tesla-v100,count=1" \
+		--metadata="install-nvidia-driver=True" \
+		--tags=http-server \
+		--address=jupyter-cloudbook \
+		--metadata-from-file=startup-script=start_docker_gpu.sh
+}
 
-if [ "$YES" = "n"]
+create_cpu_instance()
+{
+	gcloud compute instances create $INSTANCE_NAME \
+		--zone=$ZONE \
+		--image-family=$IMAGE_FAMILY_CPU \
+		--image-project=deeplearning-platform-release \
+		--boot-disk-size=56GB \
+		--maintenance-policy=TERMINATE \
+		--tags=http-server \
+		--address=jupyter-cloudbook \
+		--metadata-from-file=startup-script=start_docker_cpu.sh
+}
+
+if [ "$YES" = "n" ]
 then
 	echo "Use this link to add 'nvidia-tesla-v100'"
 	echo "https://cloud.google.com/compute/docs/gpus/add-gpus"
@@ -31,21 +59,16 @@ else
 	gcloud compute addresses create jupyter-cloudbook \
 		--zone=$ZONE
 
-	gcloud compute instances create $INSTANCE_NAME \
-		--zone=$ZONE \
-		--image-family=$IMAGE_FAMILY \
-		--image-project=deeplearning-platform-release \
-		--boot-disk-size=56GB \
-		--maintenance-policy=TERMINATE \
-		--accelerator="type=nvidia-tesla-v100,count=1" \
-		--metadata="install-nvidia-driver=True" \
-		--tags=http-server \
-		--address=jupyter-cloudbook \
-		--metadata-from-file=startup-script=start_docker.sh
+	if [ "$GPU" = "y" ]
+	then
+		create_gpu_instance
+	else
+		create_cpu_instance
+	fi
 
 	echo "put the corresponding IP address for 'jupyter-cloudbook' into your browser"
 	echo "Your password will be 'temporaryBridge'"
-	echo "CHANGE IT IMMEDIATELY"
+	echo "CHANGE IT IMMEDIATELY!"
 
 	gcloud compute addresses list
 fi
